@@ -1,9 +1,43 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='index.css')}}">
         <title>Address Book</title>
     </head>
     <body>
-        
+        <div class="container">
+            <div class="sidebar">
+                <div>
+                    <h1>Contacts</h1><button>+</button>
+                </div>
+                <ul class="contact-list">
+                    <li>John Doe</li>
+                    <li>Steve Clock</li>
+                    <li class="selected">Craggy Bramble</li>
+                    <li>Martin Martin</li>
+                    <li>Dr Smith</li>
+                </ul>
+            </div>
+            <div class="contact-details">
+                <form>
+                    <label>First Name: </label> <input type="text" value="Craggy">
+                    <label>Last Name: </label> <input type="text" value="Bramble">
+                    <div class="emails">
+                        <label>Email</label>
+                        <ul class="email-list">
+                            <li class="email-item">craggy.bramble@gmail.com <button type="button" class="email-remove">-</button> </li>
+                            <li class="email-item">cbramble@marcham.com <button type="button" class="email-remove">-</button> </li>
+                            <li class="email-item">craggy3029@yahoo.com <button type="button" class="email-remove">-</button> </li>
+                        </ul>
+                        <button type="button">+</button> <label>Add Email</label>
+                    </div>
+                    <div class="contact-buttons">
+                        <button type="button">Delete</button>
+                        <button type="button">Cancel</button>
+                        <button type="button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </body>
 </html>

@@ -1,0 +1,34 @@
+.container{
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+.sidebar{
+    background-color: lightblue;
+}
+
+.contact-details{
+    background-color: beige;
+}
+
+.contact-list li{
+    background-color: white;
+    list-style-type: none;
+}
+
+.contact-list li.selected{
+    background-color: darkblue;
+    color: white
+}
+
+.email-list{
+    list-style-type: none;
+}
+
+.email-remove{
+    display: none;
+}
+
+.email-item:hover .email-remove{
+    display: inline;
+}
