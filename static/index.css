@@ -1,6 +1,13 @@
+body{
+    margin: 0;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
 .container{
     display: grid;
     grid-template-columns: 1fr 4fr;
+    height: 100%;
 }
 
 .sidebar{
@@ -11,9 +18,19 @@
     background-color: beige;
 }
 
+.contact-list{
+    padding: 0;
+    margin: 0;
+}
+
 .contact-list li{
-    background-color: white;
     list-style-type: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.contact-list li:hover{
+    background-color: lightgray;
 }
 
 .contact-list li.selected{
@@ -21,8 +38,14 @@
     color: white
 }
 
+.emails{
+    margin-top: 20px;
+}
+
 .email-list{
     list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
 
 .email-remove{
@@ -31,4 +54,44 @@
 
 .email-item:hover .email-remove{
     display: inline;
+}
+
+.contact-buttons{
+    margin-top: 40px;
+}
+
+.contact-buttons button{
+    padding: 10px;
+    cursor: pointer;
+}
+
+.button-delete-contact{
+    background-color: red;
+    color: white;
+}
+
+.button-cancel-contact{
+    background-color: lightblue;
+}
+
+.button-save-contact{
+    background-color: blue;
+    color: white;
+}
+
+.button-add-contact{
+    border-radius: 50%;
+    background-color: blue;
+    color: white;
+    height: 30px;
+    width: 30px;
+}
+
+
+.button-add-email{
+    border-radius: 50%;
+    background-color: blue;
+    color: white;
+    height: 30px;
+    width: 30px;
 }
