@@ -184,6 +184,33 @@ async function setSaveButtonListener(){
     });
 }
 
+/** * Send request to delete contact
+ * @param {number} contactId - The ID of the contact to delete
+ */
+async function deleteContact(contactId) {
+    const response = await fetch(`/api/contacts/${contactId}`, {
+        method: 'DELETE',
+    })
+    //refresh contact list
+    await loadContacts();
+    document.getElementById('first-name').value = '';
+    document.getElementById('last-name').value = '';
+    document.querySelector('.email-list').innerHTML = '';
+    currentContactId = null;
+}
+
+/* Set up event listener for delete contact button */
+function setDeleteButtonListener(){
+    const deleteButton = document.querySelector('.button-delete-contact');
+    deleteButton.addEventListener('click', async () => {
+        if (currentContactId !== null){
+            if (confirm('Delete contact?')){
+                await deleteContact(currentContactId);
+            }
+        }
+    });
+}
+
 /* Initialize */
 async function init(){
     await loadContacts();
@@ -191,6 +218,7 @@ async function init(){
     setAddContactButtonListener();   
     setAddEmailButtonListener();
     setSaveButtonListener();
+    setDeleteButtonListener();
 }
 
 init();

@@ -22,6 +22,7 @@ emails_schema = '''
 
 def get_db_connection():
     con = sqlite3.connect(DATABASE)
+    con.execute('PRAGMA foreign_keys = ON')  # need this for delete cascade to work
     return con
 
 def create_tables():
