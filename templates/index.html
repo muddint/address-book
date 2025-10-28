@@ -2,6 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='index.css')}}">
+        <script src="{{url_for('static',filename='index.js')}}" defer></script>
         <title>Address Book</title>
     </head>
     <body>
@@ -21,8 +22,8 @@
             </div>
             <div class="contact-details">
                 <form>
-                    <label>First Name: </label> <input type="text" value="Craggy">
-                    <label>Last Name: </label> <input type="text" value="Bramble">
+                    <label>First Name: </label> <input type="text" id="first-name"  value="Craggy">
+                    <label>Last Name: </label> <input type="text" id="last-name" value="Bramble">
                     <div class="emails">
                         <label>Email</label>
                         <ul class="email-list">

@@ -39,13 +39,15 @@ def get_contact_list():
     query = '''
         SELECT contact_id, first_name, last_name
         FROM contacts
+        ORDER BY first_name ASC, last_name ASC
     '''
     results = cur.execute(query).fetchall()
     con.close()
     contact_list = [{'contact_id': contact[0], 
         'first_name': contact[1], 
-        'last_name': contact[2]} for contact in results]
-    return results
+        'last_name': (contact[2] if contact[2] is not None else '')
+        } for contact in results]
+    return contact_list
 
 def get_contact_info(contact_id):
     con = get_db_connection()
