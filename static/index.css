@@ -98,3 +98,8 @@ body{
 .hidden{
     display: none;
 }
+
+.error-message{
+    color: red;
+    font-size: 12px;
+}  

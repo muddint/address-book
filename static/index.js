@@ -37,7 +37,7 @@ async function showContactInfo(contactId){
         const item = document.createElement('li');
         item.classList.add('email-item');
         item.textContent = emailAddress;
-
+        
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.classList.add('button-remove-email');
@@ -73,7 +73,7 @@ function setContactListListener() {
  * Add a new contact to the server 
  * @param {string} firstName - The first name of the contact
  * @param {string} lastName - The last name of the contact
- * @returns {number} The ID of the newly created contact
+ * @returns {Promise<number>} The ID of the newly created contact
  */
 async function addContact(firstName, lastName) {
     const requestData = { first_name: firstName, last_name: lastName };
@@ -103,6 +103,7 @@ function setAddContactButtonListener() {
             selectedContact.classList.remove('selected');
         }
         currentContactId = null; //set to no contact selected, so form will be in add mode
+        enterEditMode(); //to enable saving/cancel
     });
 }
 
@@ -110,7 +111,7 @@ function setAddContactButtonListener() {
  * Send request to add email to contact
  * @param {number} contactId - The ID of the contact to add the email to
  * @param {string} emailAddress - The email address to add
- * @returns {number} The ID of the newly added email
+ * @returns {Promise<number>} The ID of the newly added email
  */
 async function addEmail(contactId, emailAddress) {
     const requestData = { 'email_address': emailAddress };
@@ -132,13 +133,13 @@ function addEmailInput(emailAddress = ''){
     const emailList = document.querySelector('.email-list');
     const item = document.createElement('li');
     item.classList.add('email-item');
-
+    //email input
     const emailInput = document.createElement('input');
     emailInput.type = 'text';
     emailInput.classList.add('email-input');
     emailInput.placeholder = 'Enter email address';
     emailInput.value = emailAddress;
-
+    //remove button
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.classList.add('button-remove-email');
@@ -146,9 +147,14 @@ function addEmailInput(emailAddress = ''){
     removeButton.addEventListener('click', () => {
         item.remove();
     });
-    
+    //error message
+    const errorMessage = document.createElement('span');
+    errorMessage.classList.add('error-message', 'hidden', 'error-email');
+    errorMessage.textContent = 'Invalid email format';
+
     item.appendChild(emailInput);
     item.appendChild(removeButton);
+    item.appendChild(errorMessage);
     emailList.appendChild(item);
 }
 
@@ -164,8 +170,13 @@ function setAddEmailButtonListener(){
 async function setSaveButtonListener(){
     const saveButton = document.querySelector('.button-save-contact');
     saveButton.addEventListener('click', async () => {
-        const firstName = document.getElementById('first-name').value;
-        const lastName = document.getElementById('last-name').value;
+        clearErrors();
+        const firstName = document.getElementById('first-name').value.trim();
+        const lastName = document.getElementById('last-name').value.trim();
+        if (!firstName){
+            document.querySelector('.error-first-name').classList.remove('hidden'); //show error if no first name
+            return;
+        }
         if (currentContactId === null) { //add mode
             const newContactID = await addContact(firstName, lastName); 
             currentContactId = newContactID; //switch to edit mode after adding
@@ -178,14 +189,27 @@ async function setSaveButtonListener(){
             }
             emailDeleteList = []; //clear delete list
         }
-        //add new emails, same for both modes
+    
+        //validate emails
+        const validatedEmails = [];
         const emailInputs = document.querySelectorAll('.email-input');
         for (const emailInput of emailInputs) {
             const emailAddress = emailInput.value.trim();
             if (emailAddress) { //make sure not empty 
-                await addEmail(currentContactId, emailAddress);
-            } 
+                if (!validateEmailFormat(emailAddress)){ //if not valid show error
+                    const errorMessage = emailInput.closest('.email-item').querySelector('.error-message');
+                    errorMessage.classList.remove('hidden');
+                    return;
+                } else {
+                    validatedEmails.push(emailAddress);
+                }
+            } //do nothing if empty
         }
+        //add validated emails
+        for (const validatedEmail of validatedEmails){
+            await addEmail(currentContactId, validatedEmail);
+        }
+
         //refresh and show updated contact info
         await loadContacts();
         showContactInfo(currentContactId);
@@ -193,7 +217,24 @@ async function setSaveButtonListener(){
     });
 }
 
-/** * Send request to delete contact
+/* Clears all error messages */
+function clearErrors(){
+    document.querySelectorAll('.error-message').forEach( errorMessage => {
+        errorMessage.classList.add('hidden');
+    });
+}
+
+/** 
+ * Validate email format
+ * @param {string} emailAddress - The email address to validate
+ * @returns {boolean} True if valid email format, false otherwise
+ */
+function validateEmailFormat(emailAddress){
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(emailAddress);
+}
+
+/** Send request to delete contact
  * @param {number} contactId - The ID of the contact to delete
  */
 async function deleteContact(contactId) {
@@ -238,6 +279,7 @@ function enterEditMode(){
 
 /* Leave edit mode */
 function exitEditMode(){
+    clearErrors();
     document.getElementById('first-name').disabled = true;
     document.getElementById('last-name').disabled = true;
 
