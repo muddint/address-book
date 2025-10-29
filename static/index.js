@@ -22,6 +22,9 @@ async function loadContacts() {
  * @param {number} contactId - The ID of the contact to display
  */
 async function showContactInfo(contactId){
+    exitEditMode();
+    hideUnselectedMessage();
+
     const response = await fetch(`/api/contacts/${contactId}`);
     const data = await response.json();
 
@@ -47,6 +50,12 @@ async function showContactInfo(contactId){
                                                     
         emailList.appendChild(item);
     });
+
+    //select on sidebar after loading contact if not yet selected
+    const selectedContact = document.querySelector(`[data-contact-id = "${contactId}"]`) //searches by dataset attribute contactid
+    if (selectedContact){
+        selectedContact.classList.add('selected');
+    }
 }
 
 /* Set up event listener for contact selection */
@@ -54,6 +63,12 @@ function setContactListListener() {
     const contactList = document.querySelector('.contact-list');
     contactList.addEventListener('click', (event) => {
         if (event.target.nodeName === 'LI') {
+            //check if in edit mode, if hidden button is hidden then is in edit mode
+            const isEditing = document.querySelector('.button-edit-contact').classList.contains('hidden');
+            if (isEditing && !confirm('Discard any unsaved changes?')){
+                return;
+            }
+
             //update selected constact css
             const selectedContact = document.querySelector('.contact-list li.selected');
             if (selectedContact) {
@@ -90,6 +105,7 @@ async function addContact(firstName, lastName) {
 function setAddContactButtonListener() {
     const addContactButton = document.querySelector('.button-add-contact');
     addContactButton.addEventListener('click', () => {  
+        hideUnselectedMessage();
         //clear name and make editable
         document.getElementById('first-name').value = '';
         document.getElementById('last-name').value = '';
@@ -252,6 +268,7 @@ async function deleteContact(contactId) {
     document.getElementById('last-name').value = '';
     document.querySelector('.email-list').innerHTML = '';
     currentContactId = null;
+    showUnselectedMessage();
 }
 
 /* Set up event listener for delete contact button */
@@ -262,7 +279,9 @@ function setDeleteButtonListener(){
             if (confirm('Delete contact?')){
                 await deleteContact(currentContactId);
             }
+            currentContactId = null;
         }
+        showUnselectedMessage();
     });
 }
 
@@ -310,8 +329,14 @@ function setEditButtonListener(){
 function setCancelButtonListener(){
     const cancelButton = document.querySelector('.button-cancel-contact');
     cancelButton.addEventListener('click', async () => {
-        showContactInfo(currentContactId);
-        exitEditMode();
+        if (currentContactId !== null){
+            //cancel existing contact edit
+            showContactInfo(currentContactId);
+        } else { 
+            //cancel creating new contact
+            showUnselectedMessage();
+        }
+        exitEditMode(); 
     });
 }
 
@@ -359,12 +384,25 @@ async function deleteEmail(emailId){
         method: 'DELETE'
     });
 }
-    
 
+/* Show message saying no contact selected */
+function showUnselectedMessage(){
+    //hide main panel items
+    document.querySelector('.unselected-message').style.display = 'flex';
+    document.querySelector('form').style.display = 'none';
+    document.querySelector('.contact-buttons').style.display = 'none';
+}
 
-/* Initialize */
-async function init(){
-    await loadContacts();
+/* Hide message saying no contact selected */
+function hideUnselectedMessage(){
+    //hide main panel items
+    document.querySelector('.unselected-message').style.display = 'none';
+    document.querySelector('form').style.display = 'flex';
+    document.querySelector('.contact-buttons').style.display = 'flex';
+}
+
+/* Set all listeners for init */
+function setListeners(){
     setContactListListener();
     setAddContactButtonListener();   
     setAddEmailButtonListener();
@@ -373,6 +411,14 @@ async function init(){
     setEditButtonListener();
     setCancelButtonListener();
     setEmailDeleteButtonListener();
+}
+
+
+/* Initialize */
+async function init(){
+    await loadContacts();
+    showUnselectedMessage();
+    setListeners();
 }
 
 init();

@@ -16,13 +16,17 @@
                 </ul>
             </div>
             <div class="contact-details">
+                <div class="unselected-message">
+                    <p class="unselected-message-title">No contact selected</p>
+                    <p class="unselected-message-body">Select a contact from the sidebar, or add a new contact</p>
+                </div>
                 <form>
                     <div class="section-name-inputs">
                         <div class="name-input">
                             <label>First Name</label> <input type="text" id="first-name" disabled>
+                            <span class="error-message hidden error-first-name">First name required</span>
                         </div>
                         <div class="name-input">    
-                            <span class="error-message hidden error-first-name">First name required</span>
                             <label>Last Name</label> <input type="text" id="last-name" disabled>
                         </div>
                     </div>
