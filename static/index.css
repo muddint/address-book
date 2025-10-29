@@ -11,22 +11,55 @@ body{
 }
 
 .sidebar{
-    background-color: lightblue;
+    background-color: #f8faff; 
+}
+
+.sidebar-header{
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+
+.sidebar-header h1{
+    margin: 5px;
+    font-size: 30px;
+    font-weight: 300;
 }
 
 .contact-details{
-    background-color: beige;
+    background-color: #ffffff; 
+    padding: 40px;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.contact-details form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    margin-top: 40px;
+    max-width: 700px;
 }
 
 .contact-list{
     padding: 0;
     margin: 0;
+    padding-left: 20px;
 }
 
 .contact-list li{
     list-style-type: none;
-    padding: 10px;
+    padding: 18px 0;
     cursor: pointer;
+    font-size: 18px;
+    margin-left: -20px;
+    padding-left: 20px;
 }
 
 .contact-list li:hover{
@@ -34,65 +67,190 @@ body{
 }
 
 .contact-list li.selected{
-    background-color: darkblue;
-    color: white
+    background-color: #579aff;
+    color: white;
+}
+
+.section-name-inputs{
+    display: flex;
+    gap: 30px;
+}
+
+.name-input{
+    flex-basis: 300px;
+}
+
+label{
+    font-size: 12px;
+    display: block;
+    color: #6a6a6a;
+}
+
+.name-input label{
+    margin-bottom: 4px;
+}
+
+.name-input input{
+    height: 30px;
+    width: 100%;
+    border: 1px solid black;
+    color: black;
+    font-size: 16px;
+    padding-left: 10px;
+}
+
+.name-input input:disabled{
+    background-color: #f9fbff;
+    border-color: #dceaff;
+    color: #444444;
 }
 
 .emails{
     margin-top: 20px;
 }
 
+.emails label{
+    margin-bottom: 4px;
+}
+
 .email-list{
     list-style-type: none;
     padding: 0;
     margin: 0;
+    margin-bottom: 10px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.email-list li{
+    padding: 8px 0px;
+    color: #555555;
+    font-size: 16px;
+}
+
+.email-input{
+    padding: 10px 12px;
+    border: 1px solid black;
+    font-size: 15px;
+    width: 100%;
+    max-width: 400px;
+    flex: 1;
 }
 
 .button-remove-email{
-    display: none;
+    visibility: hidden;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-color: #ff5757;
+    color:white;
+    border: none;
+    cursor: pointer;
+    font-size: 30px;
+    flex-shrink: 0;
+    line-height: 0;
+    padding: 0;
+    padding-bottom: 5px;
+}
+
+.email-item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
 }
 
 .edit-emails .email-item:hover .button-remove-email{
-    display: inline;
+    visibility: visible;
 }
 
 .contact-buttons{
-    margin-top: 40px;
+    flex-shrink: 0;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 640px;
 }
+
+.contact-buttons-right{
+    display: flex;
+    gap: 10px;
+}
+
 
 .contact-buttons button{
-    padding: 10px;
+    padding: 5px 35px;
+    border: none;
     cursor: pointer;
+    font-size: 18px;
 }
 
-.button-delete-contact{
-    background-color: red;
+.contact-buttons button:hover{
+    opacity: 0.9;
+}
+
+.contact-buttons .button-delete-contact{
+    background-color: #ff5757;
     color: white;
 }
 
-.button-cancel-contact{
-    background-color: lightblue;
+.contact-buttons .button-edit-contact {
+    background-color: #f9fbff;
+    border: 1px solid #579aff;
 }
 
-.button-save-contact{
-    background-color: blue;
+.contact-buttons .button-cancel-contact{
+    background-color: #f9fbff;
+    border: 2px solid #579aff;
+}
+
+.contact-buttons .button-save-contact{
+    background-color: #579aff;
     color: white;
+}
+
+.button-blue-plus{
+    border-radius: 50%;
+    background-color: #579aff;
+    color: white;
+    border: none;   
+    cursor: pointer;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
 .button-add-contact{
-    border-radius: 50%;
-    background-color: blue;
-    color: white;
-    height: 30px;
-    width: 30px;
+    height: 32px;
+    width: 32px;
+    font-size: 40px;
+    padding-bottom: 7px;
 }
 
 .button-add-email{
-    border-radius: 50%;
-    background-color: blue;
-    color: white;
-    height: 30px;
-    width: 30px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+}
+
+.button-add-email .button-blue-plus{
+    height: 20px;
+    width: 25px;
+    flex-shrink: 0;
+    font-size: 30px;
+    padding-bottom: 6px;
+}
+
+.text-add-email{
+    color: #579aff;
+    font-size: 18px;
 }
 
 .hidden{

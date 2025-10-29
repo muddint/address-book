@@ -156,6 +156,11 @@ function addEmailInput(emailAddress = ''){
     item.appendChild(removeButton);
     item.appendChild(errorMessage);
     emailList.appendChild(item);
+
+    //focus input
+    emailList.scrollTop = emailList.scrollHeight;
+    emailInput.focus();
+
 }
 
 /* Set up event listener for add email button to create empty input field */
@@ -272,7 +277,7 @@ function enterEditMode(){
     document.querySelector('.button-cancel-contact').classList.remove('hidden');
     document.querySelector('.button-save-contact').classList.remove('hidden');
     document.querySelector('.button-edit-contact').classList.add('hidden');
-    document.querySelector('.button-delete-contact').classList.add('hidden');
+    //document.querySelector('.button-delete-contact').classList.add('hidden');
 
     document.querySelector('.email-list').classList.add('edit-emails');
 }
@@ -287,7 +292,7 @@ function exitEditMode(){
     document.querySelector('.button-cancel-contact').classList.add('hidden');
     document.querySelector('.button-save-contact').classList.add('hidden');
     document.querySelector('.button-edit-contact').classList.remove('hidden');
-    document.querySelector('.button-delete-contact').classList.remove('hidden');
+    //document.querySelector('.button-delete-contact').classList.remove('hidden');
 
     document.querySelector('.email-list').classList.remove('edit-emails');
 }
