@@ -48,11 +48,11 @@ body{
     margin: 0;
 }
 
-.email-remove{
+.button-remove-email{
     display: none;
 }
 
-.email-item:hover .email-remove{
+.edit-emails .email-item:hover .button-remove-email{
     display: inline;
 }
 
@@ -87,11 +87,14 @@ body{
     width: 30px;
 }
 
-
 .button-add-email{
     border-radius: 50%;
     background-color: blue;
     color: white;
     height: 30px;
     width: 30px;
+}
+
+.hidden{
+    display: none;
 }

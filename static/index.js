@@ -1,4 +1,5 @@
 let currentContactId = null; //used for tracking whether a contact is selected to choose between add or edit contact form
+let emailDeleteList = []; //used to track emails to delete when saving contact
 
 /* Load contacts from the server and display them in the sidebar */
 async function loadContacts() {
@@ -39,7 +40,7 @@ async function showContactInfo(contactId){
 
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
-        removeButton.classList.add('email-remove');
+        removeButton.classList.add('button-remove-email');
         removeButton.textContent = '-';
         removeButton.dataset.emailId = emailId;
         item.appendChild(removeButton);
@@ -140,7 +141,7 @@ function addEmailInput(emailAddress = ''){
 
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
-    removeButton.classList.add('email-remove');
+    removeButton.classList.add('button-remove-email');
     removeButton.textContent = '-';
     removeButton.addEventListener('click', () => {
         item.remove();
@@ -167,20 +168,28 @@ async function setSaveButtonListener(){
         const lastName = document.getElementById('last-name').value;
         if (currentContactId === null) { //add mode
             const newContactID = await addContact(firstName, lastName); 
-            const emailInputs = document.querySelectorAll('.email-input');
-            for (const emailInput of emailInputs) {
-                const emailAddress = emailInput.value.trim();
-                if (emailAddress) { //make sure not empty 
-                    await addEmail(newContactID, emailAddress);
-
-                } //add delete if empty later ----------------------------------------------------------------
-            }
             currentContactId = newContactID; //switch to edit mode after adding
         } else { //edit mode
-
+            //name changes
+            await updateContact(currentContactId, firstName, lastName);
+            //delete emails
+            for (const emailId of emailDeleteList){
+                await deleteEmail(emailId);
+            }
+            emailDeleteList = []; //clear delete list
         }
+        //add new emails, same for both modes
+        const emailInputs = document.querySelectorAll('.email-input');
+        for (const emailInput of emailInputs) {
+            const emailAddress = emailInput.value.trim();
+            if (emailAddress) { //make sure not empty 
+                await addEmail(currentContactId, emailAddress);
+            } 
+        }
+        //refresh and show updated contact info
         await loadContacts();
         showContactInfo(currentContactId);
+        exitEditMode();
     });
 }
 
@@ -188,7 +197,7 @@ async function setSaveButtonListener(){
  * @param {number} contactId - The ID of the contact to delete
  */
 async function deleteContact(contactId) {
-    const response = await fetch(`/api/contacts/${contactId}`, {
+    await fetch(`/api/contacts/${contactId}`, {
         method: 'DELETE',
     })
     //refresh contact list
@@ -211,6 +220,101 @@ function setDeleteButtonListener(){
     });
 }
 
+/* Set to edit mode */
+function enterEditMode(){
+    emailDeleteList = []; //clear list of emails to delete
+
+    document.getElementById('first-name').disabled = false;
+    document.getElementById('last-name').disabled = false;
+
+    document.querySelector('.button-add-email').classList.remove('hidden');
+    document.querySelector('.button-cancel-contact').classList.remove('hidden');
+    document.querySelector('.button-save-contact').classList.remove('hidden');
+    document.querySelector('.button-edit-contact').classList.add('hidden');
+    document.querySelector('.button-delete-contact').classList.add('hidden');
+
+    document.querySelector('.email-list').classList.add('edit-emails');
+}
+
+/* Leave edit mode */
+function exitEditMode(){
+    document.getElementById('first-name').disabled = true;
+    document.getElementById('last-name').disabled = true;
+
+    document.querySelector('.button-add-email').classList.add('hidden');
+    document.querySelector('.button-cancel-contact').classList.add('hidden');
+    document.querySelector('.button-save-contact').classList.add('hidden');
+    document.querySelector('.button-edit-contact').classList.remove('hidden');
+    document.querySelector('.button-delete-contact').classList.remove('hidden');
+
+    document.querySelector('.email-list').classList.remove('edit-emails');
+}
+
+
+/* Set up event listener for edit contact button */
+function setEditButtonListener(){
+    const editButton = document.querySelector('.button-edit-contact');
+    editButton.addEventListener('click', () => {
+        enterEditMode();
+    });
+}
+
+/* Set up event listener for cancel contact button */
+function setCancelButtonListener(){
+    const cancelButton = document.querySelector('.button-cancel-contact');
+    cancelButton.addEventListener('click', async () => {
+        showContactInfo(currentContactId);
+        exitEditMode();
+    });
+}
+
+/**
+ * Update contact info with changes to name
+ * @param {number} contactId - The ID of the contact to update
+ * @param {string} firstName - What first name of the contact should be updated to
+ * @param {string} lastName - What last name of the contact should be updated to
+ */
+async function updateContact(contactId, firstName, lastName){
+    await fetch(`/api/contacts/${contactId}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            'first_name': firstName,
+            'last_name': lastName
+        })
+    });
+}
+
+/* Set up event listener for email delete buttons */
+async function setEmailDeleteButtonListener(){
+    const emailList = document.querySelector('.email-list'); //adding listener to email list so not too many listeners
+    emailList.addEventListener('click', (event) =>{
+        if (event.target.classList.contains('button-remove-email')){
+            const removeButton = event.target;
+            if (confirm('Remove email? You will still need to save to apply changes')){
+                const emailId = removeButton.dataset.emailId; 
+                if (emailId){ //prevents newly added but not saved emails from being added to delete list
+                    emailDeleteList.push(emailId); //add to delete list
+                }
+                removeButton.closest('.email-item').remove(); //remove ancestor email item
+            }
+        }
+
+    })
+}
+
+/**
+ * Send request to delete email
+ * @param {number} emailId - The ID of the email to delete
+ */
+async function deleteEmail(emailId){
+    await fetch(`/api/emails/${emailId}`, {
+        method: 'DELETE'
+    });
+}
+    
+
+
 /* Initialize */
 async function init(){
     await loadContacts();
@@ -219,6 +323,9 @@ async function init(){
     setAddEmailButtonListener();
     setSaveButtonListener();
     setDeleteButtonListener();
+    setEditButtonListener();
+    setCancelButtonListener();
+    setEmailDeleteButtonListener();
 }
 
 init();

@@ -122,7 +122,17 @@ def delete_email(email_id):
     con.commit()
     con.close()
 
-   
+def update_contact(contact_id, first_name, last_name):
+    con = get_db_connection()
+    cur = con.cursor()
+    query = '''
+        UPDATE contacts
+        SET first_name = ?, last_name = ?
+        WHERE contact_id = ?
+    '''
+    cur.execute(query, (first_name, last_name, contact_id))
+    con.commit()
+    con.close()   
 
 
 
