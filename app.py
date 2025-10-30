@@ -1,7 +1,10 @@
 from flask import Flask, render_template, jsonify, request
 import database
+from test_db import init_if_empty
 
 app = Flask(__name__)
+
+init_if_empty()
 
 # Home page
 @app.route('/')
@@ -58,6 +61,11 @@ def delete_email(email_id):
     database.delete_email(email_id)
     return jsonify({'status': 'success'})
 
+
+
 if __name__ == '__main__':
-    database.create_tables()
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+  # database.create_tables()
+    app.run(host='0.0.0.0', port=port)
+  # app.run(debug=True)
