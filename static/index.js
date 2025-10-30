@@ -61,13 +61,8 @@ async function showContactInfo(contactId){
 /* Set up event listener for contact selection */
 function setContactListListener() {
     const contactList = document.querySelector('.contact-list');
-    let isLoading = false; //handle race condition when deployment site super slow
     contactList.addEventListener('click', (event) => {
         if (event.target.nodeName === 'LI') {
-            if (isLoading) { //clicks dont do anything when loading prev
-                return;
-            }
-            isLoading = true; //disable clicks
             //check if in edit mode, if hidden button is hidden then is in edit mode
             const isEditing = document.querySelector('.button-edit-contact').classList.contains('hidden');
             if (isEditing && !confirm('Discard any unsaved changes?')){
@@ -84,7 +79,6 @@ function setContactListListener() {
             const contactId = event.target.dataset.contactId;
             currentContactId = contactId; //set current contact id for edit mode
             showContactInfo(contactId);
-            isLoading = false; //reenable clicks
         }
     });
 }
