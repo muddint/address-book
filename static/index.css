@@ -2,11 +2,12 @@ body{
     margin: 0;
     height: 100vh;
     font-family: Arial, sans-serif;
+    background-color: #f8faff;
 }
 
 .container{
     display: grid;
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: 280px 1fr;
     height: 100%;
 }
 
@@ -186,10 +187,12 @@ label{
 
 
 .contact-buttons button{
-    padding: 5px 35px;
+    padding: 10px 0;
     border: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px;
+    width: 120px;
+    text-align: center;
 }
 
 .contact-buttons button:hover{
