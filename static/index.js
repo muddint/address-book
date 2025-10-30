@@ -194,10 +194,36 @@ async function setSaveButtonListener(){
         clearErrors();
         const firstName = document.getElementById('first-name').value.trim();
         const lastName = document.getElementById('last-name').value.trim();
+
+        //error check
+        let hasErrors = false;
         if (!firstName){
             document.querySelector('.error-first-name').classList.remove('hidden'); //show error if no first name
+            hasErrors = true;
+        }
+        if (!lastName){
+            document.querySelector('.error-last-name').classList.remove('hidden'); //show error if no last name
+            hasErrors = true;
+        }
+        //validate emails
+        const validatedEmails = [];
+        const emailInputs = document.querySelectorAll('.email-input');
+        for (const emailInput of emailInputs) {
+            const emailAddress = emailInput.value.trim();
+            if (emailAddress) { //make sure not empty 
+                if (!validateEmailFormat(emailAddress)){ //if not valid show error
+                    const errorMessage = emailInput.closest('.email-item').querySelector('.error-message');
+                    errorMessage.classList.remove('hidden');
+                    hasErrors = true;
+                } else {
+                    validatedEmails.push(emailAddress);
+                }
+            } //do nothing if empty
+        }
+        if (hasErrors){
             return;
         }
+
         if (currentContactId === null) { //add mode
             const newContactID = await addContact(firstName, lastName); 
             currentContactId = newContactID; //switch to edit mode after adding
@@ -211,21 +237,6 @@ async function setSaveButtonListener(){
             emailDeleteList = []; //clear delete list
         }
     
-        //validate emails
-        const validatedEmails = [];
-        const emailInputs = document.querySelectorAll('.email-input');
-        for (const emailInput of emailInputs) {
-            const emailAddress = emailInput.value.trim();
-            if (emailAddress) { //make sure not empty 
-                if (!validateEmailFormat(emailAddress)){ //if not valid show error
-                    const errorMessage = emailInput.closest('.email-item').querySelector('.error-message');
-                    errorMessage.classList.remove('hidden');
-                    return;
-                } else {
-                    validatedEmails.push(emailAddress);
-                }
-            } //do nothing if empty
-        }
         //add validated emails
         for (const validatedEmail of validatedEmails){
             await addEmail(currentContactId, validatedEmail);

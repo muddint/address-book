@@ -6,7 +6,7 @@ contacts_schema = '''
     CREATE TABLE IF NOT EXISTS contacts (
         contact_id INTEGER PRIMARY KEY AUTOINCREMENT,
         first_name TEXT NOT NULL,
-        last_name TEXT
+        last_name TEXT NOT NULL
     )
 '''
 
