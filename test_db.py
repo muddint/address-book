@@ -1,6 +1,8 @@
 from database import create_tables, add_contact, add_email
 
-#init if not already exists
+# This file is just used to seed the db
+
+# init if not already exists
 create_tables()
 
 # Add contacts from Figma

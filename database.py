@@ -2,6 +2,7 @@ import sqlite3
 
 DATABASE = "contacts.db"
 
+# Database Schema 
 contacts_schema = '''
     CREATE TABLE IF NOT EXISTS contacts (
         contact_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,11 +21,13 @@ emails_schema = '''
     )
 '''
 
+# Connects to database
 def get_db_connection():
     con = sqlite3.connect(DATABASE)
     con.execute('PRAGMA foreign_keys = ON')  # need this for delete cascade to work
     return con
 
+# Creates tables
 def create_tables():
     con = get_db_connection()
     cur = con.cursor()
@@ -34,6 +37,7 @@ def create_tables():
     con.close()
     return con
 
+# Returns list of contacts
 def get_contact_list():
     con = get_db_connection()
     cur = con.cursor()
@@ -50,6 +54,7 @@ def get_contact_list():
         } for contact in results]
     return contact_list
 
+# Given contact id, return name + emails of contact
 def get_contact_info(contact_id):
     con = get_db_connection()
     cur = con.cursor()
@@ -74,6 +79,7 @@ def get_contact_info(contact_id):
         }
     return results
 
+# Add name to contact db
 def add_contact(first_name, last_name):
     con = get_db_connection()
     cur = con.cursor()
@@ -87,6 +93,7 @@ def add_contact(first_name, last_name):
     con.close()
     return contact_id
 
+# Add a contact's email to the db
 def add_email(contact_id, email_address):
     con = get_db_connection()
     cur = con.cursor()
@@ -100,6 +107,7 @@ def add_email(contact_id, email_address):
     con.close()
     return email_id
 
+# Delete contact from db
 def delete_contact(contact_id):
     con = get_db_connection()
     cur = con.cursor()
@@ -111,6 +119,7 @@ def delete_contact(contact_id):
     con.commit()
     con.close()
 
+# Delete email from db
 def delete_email(email_id):
     con = get_db_connection()
     cur = con.cursor()
@@ -122,6 +131,7 @@ def delete_email(email_id):
     con.commit()
     con.close()
 
+# Change name of a contact
 def update_contact(contact_id, first_name, last_name):
     con = get_db_connection()
     cur = con.cursor()
